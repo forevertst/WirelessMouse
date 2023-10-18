@@ -11,21 +11,23 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TcpThreadRunnable implements Runnable {
     String ipAddress;
     int port;
     Socket socket;
     OutputStream outputStream;
-    boolean sendFlag;
-    String message;
+
+    List<String> sendList;
 
     boolean stopFlag = false;
 
     public TcpThreadRunnable(String ip, int p) {
         ipAddress = ip;
         port = p;
-        sendFlag = false;
+        sendList = new ArrayList<>();
     }
 
     public void init() {
@@ -37,9 +39,8 @@ public class TcpThreadRunnable implements Runnable {
         }
     }
 
-    public void send(String m) {
-        message = m;
-        sendFlag = true;
+    public void send(String message) {
+        sendList.add(message);
     }
 
     public void cancel() {
@@ -63,10 +64,12 @@ public class TcpThreadRunnable implements Runnable {
                 this.cancel();
                 break;
             }
-            if (sendFlag) {
+            if (sendList.size() > 0) {
                 try {
-                    outputStream.write(message.getBytes(StandardCharsets.UTF_8));
+                    String data = sendList.get(0) + ";";
+                    outputStream.write(data.getBytes(StandardCharsets.UTF_8));
                     outputStream.flush();
+                    sendList.remove(0);
                 } catch (Exception e) {
 //                    throw new RuntimeException(e);
                     Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -78,7 +81,6 @@ public class TcpThreadRunnable implements Runnable {
                     });
                     e.printStackTrace();
                 }
-                sendFlag = false;
             }
         }
     }

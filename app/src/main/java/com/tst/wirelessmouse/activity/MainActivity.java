@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.tst.wirelessmouse.Global;
 import com.tst.wirelessmouse.R;
+import com.tst.wirelessmouse.listener.TouchListener;
 import com.tst.wirelessmouse.transform.TcpManager;
 import com.tst.wirelessmouse.transform.TcpThreadRunnable;
 
@@ -22,11 +23,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Global.setMainActivity(this);
+
+        View rootView = getWindow().getDecorView();
+        rootView.setOnTouchListener(new TouchListener());
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
+
         Toast.makeText(this, "onStart", Toast.LENGTH_SHORT).show();
         TcpManager.startTcpClient();
     }

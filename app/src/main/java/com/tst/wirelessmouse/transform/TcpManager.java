@@ -30,6 +30,10 @@ public class TcpManager {
         });
     }
 
+    public static void tcpClientSend(String message) {
+        tcpThreadRunnable.send(message);
+    }
+
     public static void stopTcpClient() {
         tcpThreadRunnable.stop();
     }
