@@ -1,6 +1,11 @@
-package com.tst.wirelessmouse.runnable;
+package com.tst.wirelessmouse.transform;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.widget.Toast;
+
+import com.tst.wirelessmouse.Global;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -8,7 +13,6 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 public class TcpThreadRunnable implements Runnable {
-    Context context;
     String ipAddress;
     int port;
     Socket socket;
@@ -16,12 +20,11 @@ public class TcpThreadRunnable implements Runnable {
     boolean sendFlag;
     String message;
 
-    boolean stopFlag =false;
+    boolean stopFlag = false;
 
-    public TcpThreadRunnable(String ip, int p, Context con) {
+    public TcpThreadRunnable(String ip, int p) {
         ipAddress = ip;
         port = p;
-        context = con;
         sendFlag = false;
     }
 
@@ -29,16 +32,14 @@ public class TcpThreadRunnable implements Runnable {
         try {
             socket = new Socket(ipAddress, port);
             outputStream = socket.getOutputStream();
-            int a =3;
-            int b =a;
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void send(String m) {
-        sendFlag = true;
         message = m;
+        sendFlag = true;
     }
 
     public void cancel() {
@@ -56,10 +57,9 @@ public class TcpThreadRunnable implements Runnable {
 
     @Override
     public void run() {
-            // 创建一个Socket连接到服务器的IP和端口
-        this.init();
+        init();
         while (true) {
-            if(stopFlag){
+            if (stopFlag) {
                 this.cancel();
                 break;
             }
@@ -67,8 +67,16 @@ public class TcpThreadRunnable implements Runnable {
                 try {
                     outputStream.write(message.getBytes(StandardCharsets.UTF_8));
                     outputStream.flush();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                } catch (Exception e) {
+//                    throw new RuntimeException(e);
+                    Handler mainHandler = new Handler(Looper.getMainLooper());
+                    mainHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(Global.getMainActivity(), "outputStream错误", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    e.printStackTrace();
                 }
                 sendFlag = false;
             }
