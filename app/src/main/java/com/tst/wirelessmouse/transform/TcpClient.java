@@ -1,6 +1,5 @@
 package com.tst.wirelessmouse.transform;
 
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
@@ -14,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TcpThreadRunnable implements Runnable {
+public class TcpClient implements Runnable {
     String ipAddress;
     int port;
     Socket socket;
@@ -24,7 +23,7 @@ public class TcpThreadRunnable implements Runnable {
 
     boolean stopFlag = false;
 
-    public TcpThreadRunnable(String ip, int p) {
+    public TcpClient(String ip, int p) {
         ipAddress = ip;
         port = p;
         sendList = new ArrayList<>();
@@ -76,9 +75,10 @@ public class TcpThreadRunnable implements Runnable {
                     mainHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(Global.getMainActivity(), "outputStream错误", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Global.getMainActivity(), "tcpClient错误", Toast.LENGTH_SHORT).show();
                         }
                     });
+                    this.cancel();
                     e.printStackTrace();
                 }
             }
