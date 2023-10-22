@@ -1,9 +1,9 @@
 package com.tst.wirelessmouse.listener;
 
+import static com.tst.wirelessmouse.transform.TransformManager.tcpClientSend;
+
 import android.view.MotionEvent;
 import android.view.View;
-
-import com.tst.wirelessmouse.transform.TcpManager;
 
 public class TouchListener implements View.OnTouchListener {
     long leftMouseClickTime;
@@ -31,16 +31,16 @@ public class TouchListener implements View.OnTouchListener {
                 if(isLeft)
                 {
                     if (System.currentTimeMillis() - leftMouseClickTime < 300) {
-                        TcpManager.tcpClientSend("mouseLeftClick");
+                        tcpClientSend("mouseLeftClick");
                     }
                 }else{
                     if (System.currentTimeMillis() - rightMouseClickTime < 300) {
-                        TcpManager.tcpClientSend("mouseRightClick");
+                        tcpClientSend("mouseRightClick");
                     }
                 }
 
                 if (pointerCount == 2) {
-                    TcpManager.tcpClientSend("mousePosInit");
+                    tcpClientSend("mousePosInit");
                 }
                 break;
             }
@@ -51,7 +51,7 @@ public class TouchListener implements View.OnTouchListener {
                 if (pointerCount == 2) {
                     float x = (event.getX(0) + event.getX(1)) / 2;
                     float y = (event.getY(0) + event.getY(1)) / 2;
-                    TcpManager.tcpClientSend("mouseMove," + x + "," + y);
+                    tcpClientSend("mouseMove," + x + "," + y);
                 }
                 break;
             }

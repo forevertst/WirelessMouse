@@ -2,6 +2,7 @@ package com.tst.wirelessmouse.transform;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.tst.wirelessmouse.Global;
@@ -29,7 +30,7 @@ public class TcpClient implements Runnable {
         sendList = new ArrayList<>();
     }
 
-    public void init() {
+    public void initTcpServer() {
         try {
             socket = new Socket(ipAddress, port);
             outputStream = socket.getOutputStream();
@@ -57,7 +58,7 @@ public class TcpClient implements Runnable {
 
     @Override
     public void run() {
-        init();
+        initTcpServer();
         while (true) {
             if (stopFlag) {
                 this.cancel();
@@ -70,14 +71,7 @@ public class TcpClient implements Runnable {
                     outputStream.flush();
                     sendList.remove(0);
                 } catch (Exception e) {
-//                    throw new RuntimeException(e);
-                    Handler mainHandler = new Handler(Looper.getMainLooper());
-                    mainHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(Global.getMainActivity(), "tcpClient错误", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    Log.d("tcp错误", "tcpClient错误");
                     this.cancel();
                     e.printStackTrace();
                 }

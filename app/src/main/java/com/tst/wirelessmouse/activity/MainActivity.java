@@ -1,19 +1,15 @@
 package com.tst.wirelessmouse.activity;
 
 import static com.tst.wirelessmouse.listener.ListenerManager.startListener;
+import static com.tst.wirelessmouse.transform.TransformManager.startConnecting;
+import static com.tst.wirelessmouse.transform.TransformManager.stopConnectiong;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Toast;
 
 import com.tst.wirelessmouse.Global;
 import com.tst.wirelessmouse.R;
-import com.tst.wirelessmouse.listener.TouchListener;
-import com.tst.wirelessmouse.transform.TcpManager;
-import com.tst.wirelessmouse.transform.UdpManager;
-import com.tst.wirelessmouse.transform.UdpServer;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,19 +27,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-//        TcpManager.startTcpClient();
-
-        UdpManager.startUdpClient();
-        UdpManager.startUdpServer();
+        startConnecting();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-//        Toast.makeText(this, "onStop", Toast.LENGTH_SHORT).show();
-        TcpManager.stopTcpClient();
-        UdpManager.stopUdpClient();
-        UdpManager.stopUdpServer();
+        stopConnectiong();
     }
 
     @Override

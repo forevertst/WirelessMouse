@@ -1,23 +1,29 @@
 package com.tst.wirelessmouse.transform;
 
+import static com.tst.wirelessmouse.transform.TransformManager.startTcpClient;
+
 import android.widget.Toast;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
 public class UdpServer {
-    static DatagramSocket socket;
-    static boolean stopFlag = false;
+    int port;
+    DatagramSocket socket;
+    boolean stopFlag;
 
-    public static void stop() {
+    UdpServer(int port) {
+        this.port = port;
+        stopFlag = false;
+    }
+
+    public void stop() {
         stopFlag = true;
     }
 
-    public static void init() {
+    public void init() {
         try {
             // 创建 DatagramSocket 绑定到指定端口
-            stopFlag = false;
-            int port = 5002;
             socket = new DatagramSocket(port);
 
             while (true) {
@@ -38,8 +44,9 @@ public class UdpServer {
                 int senderPort = receivePacket.getPort();
 
                 System.out.println("Received from " + senderAddress + ":" + senderPort + " - " + receivedMessage);
+
                 if (receivedMessage.equals("2;")) {
-                    TcpManager.startTcpClient(senderAddress);
+                    startTcpClient(senderAddress);
                 }
             }
         } catch (Exception e) {
