@@ -45,7 +45,8 @@ public class UdpServer {
 
                 System.out.println("Received from " + senderAddress + ":" + senderPort + " - " + receivedMessage);
 
-                if (receivedMessage.equals("2;")) {
+                if (receivedMessage.equals("2;") && !stopFlag) {
+                    TransformManager.stopTcpClient();
                     startTcpClient(senderAddress);
                 }
             }

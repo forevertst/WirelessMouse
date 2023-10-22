@@ -1,6 +1,5 @@
 package com.tst.wirelessmouse.activity;
 
-import static com.tst.wirelessmouse.listener.ListenerManager.startListener;
 import static com.tst.wirelessmouse.transform.TransformManager.startConnecting;
 import static com.tst.wirelessmouse.transform.TransformManager.stopConnectiong;
 
@@ -20,8 +19,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Global.setMainActivity(this);
-
-        startListener();
     }
 
     @Override

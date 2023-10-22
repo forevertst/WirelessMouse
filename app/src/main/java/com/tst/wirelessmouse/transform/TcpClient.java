@@ -72,7 +72,7 @@ public class TcpClient implements Runnable {
                     sendList.remove(0);
                 } catch (Exception e) {
                     Log.d("tcp错误", "tcpClient错误");
-                    this.cancel();
+                    TransformManager.stopTcpClient();
                     e.printStackTrace();
                 }
             }
