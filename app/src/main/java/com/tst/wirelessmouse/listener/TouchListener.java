@@ -5,40 +5,43 @@ import android.view.View;
 
 import com.tst.wirelessmouse.transform.TcpManager;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class TouchListener implements View.OnTouchListener {
-    long currentTimeMillis ;
+    long leftMouseClickTime;
+    long rightMouseClickTime;
+
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         int action = event.getActionMasked();
-
+//        int pointerCount = event.getPointerCount();
+//        int pointerIndex = event.getActionIndex();
+//        int pointerId = event.getPointerId(pointerIndex);
         switch (action) {
             // 第一个手指按下
             case MotionEvent.ACTION_DOWN: {
-                int pointerCount = event.getPointerCount();
-                int pointerIndex = event.getActionIndex();
-                int pointerId = event.getPointerId(pointerIndex);
-                float x = event.getX();
-                float y = event.getY();
                 break;
             }
             // 额外的手指按下
             case MotionEvent.ACTION_POINTER_DOWN: {
                 int pointerCount = event.getPointerCount();
-                if(System.currentTimeMillis()-currentTimeMillis<300)
-                {
-                    TcpManager.tcpClientSend("mouseClick");
+                boolean isLeft = false;
+                if (pointerCount == 2) {
+                    int pointerIndex = event.getActionIndex();
+                    isLeft = (event.getX(pointerIndex) - event.getX(pointerIndex == 0 ? 1 : 0)) < 0;
                 }
-                if(pointerCount == 2)
+                if(isLeft)
                 {
+                    if (System.currentTimeMillis() - leftMouseClickTime < 300) {
+                        TcpManager.tcpClientSend("mouseLeftClick");
+                    }
+                }else{
+                    if (System.currentTimeMillis() - rightMouseClickTime < 300) {
+                        TcpManager.tcpClientSend("mouseRightClick");
+                    }
+                }
+
+                if (pointerCount == 2) {
                     TcpManager.tcpClientSend("mousePosInit");
                 }
-
-
-                int pointerIndex = event.getActionIndex();
-                int pointerId = event.getPointerId(pointerIndex);
                 break;
             }
 
@@ -55,17 +58,22 @@ public class TouchListener implements View.OnTouchListener {
 
             // 额外的手指抬起
             case MotionEvent.ACTION_POINTER_UP: {
-                currentTimeMillis = System.currentTimeMillis();
                 int pointerCount = event.getPointerCount();
-                int pointerIndex = event.getActionIndex();
-                int pointerId = event.getPointerId(pointerIndex);
+                boolean isLeft = false;
+                if (pointerCount == 2) {
+                    int pointerIndex = event.getActionIndex();
+                    isLeft = (event.getX(pointerIndex) - event.getX(pointerIndex == 0 ? 1 : 0)) < 0;
+                }
+                if(isLeft)
+                {
+                    leftMouseClickTime = System.currentTimeMillis();
+                }else{
+                    rightMouseClickTime = System.currentTimeMillis();
+                }
                 break;
             }
             // 最后一个手指抬起
             case MotionEvent.ACTION_UP: {
-                int pointerCount = event.getPointerCount();
-                int pointerIndex = event.getActionIndex();
-                int pointerId = event.getPointerId(pointerIndex);
                 break;
             }
 
